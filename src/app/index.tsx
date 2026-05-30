@@ -1,8 +1,3 @@
-/* 
-Generalized record screen
-Use for creating screens for recording different activities sensor recording
- */
-
 import { useTheme } from "@/theme";
 
 import { Accelerometer } from "expo-sensors";

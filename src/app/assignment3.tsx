@@ -3,12 +3,15 @@ Generalized record screen
 Use for creating screens for recording different activities sensor recording
  */
 
+
 import { useTheme } from "@/theme";
 
 import { Accelerometer } from "expo-sensors";
 import { useTheme as useRETheme } from "re-native-ui";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Alert,
+  AppState,
   Dimensions,
   ScrollView,
   StyleSheet,
@@ -17,6 +20,11 @@ import {
   View,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
+import {
+  SensorType,
+  useAnimatedSensor,
+  useReducedMotion,
+} from "react-native-reanimated";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 interface NumericStepperProps {
@@ -80,7 +88,11 @@ interface DataPoint {
   magnitude: number;
 }
 
+
+
 export default function Assignment3() {
+
+
   const [targetSeconds, setTargetSeconds] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -100,8 +112,12 @@ export default function Assignment3() {
   const dataPointsRef = useRef<DataPoint[]>([]);
   const [chartPoints, setChartPoints] = useState<DataPoint[]>([]); // Only for UI rendering
 
+ 
   const [acc, setAccData] = useState({ x: 0, y: 0, z: 0 });
 
+ 
+
+  const appState = useRef(AppState.currentState);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isActiveRef = useRef(false);
@@ -124,6 +140,7 @@ export default function Assignment3() {
     isActiveRef.current = isActive; // Keep the ref in sync with the state
   }, [isActive]);
 
+  
   useEffect(() => {
     if (isActive) {
       dataPointsRef.current = []; // Clear ref
@@ -157,6 +174,7 @@ export default function Assignment3() {
             clearInterval(timerRef.current!);
             setIsActive(false);
 
+         
             return nextSecond;
           }
           return nextSecond;
@@ -168,14 +186,12 @@ export default function Assignment3() {
     };
   }, [isActive]);
 
+ 
+
   const cancelRecording = () => {
     setIsActive(false);
     setSeconds(0);
     setChartPoints([]);
-  };
-
-  const startRecording = () => {
-    setIsActive(true);
   };
 
   const chartData = {
@@ -225,10 +241,8 @@ export default function Assignment3() {
           style={[
             styles.button,
             { backgroundColor: isActive ? "#ff0000" : "#4cd964" },
-            isActive && { opacity: 0.6 },
           ]}
-          onPress={startRecording}
-          disabled={isActive}
+          onPress={() => handleToggleRecording()}
         >
           <Text style={[styles.buttonText, { color: colors.text }]}>
             {isActive ? "Stop Recording" : "Start Recording"}
